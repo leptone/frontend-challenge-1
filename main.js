@@ -19,8 +19,16 @@ var api = {};
 
 */
 api.fanOut = function(input, fn) {
-  // TODO: your implementation here.
-  return [];
+    // TODO: your implementation here.
+    
+    var mapped = [];
+    // iterate over inputs
+    for(var i = 0; i < input.length; i++){
+        // add element to the array after applying fn to it
+        mapped.push(fn(input[i]));
+    }
+    // return the resulting array
+    return mapped;
 };
 
 
@@ -47,8 +55,16 @@ api.fanOut = function(input, fn) {
 
  */
 api.funnel = function(input, fn, startValue){
-  // TODO: your implementation here.
-  return 0;
+    // TODO: your implementation here.
+
+    var reducer = startValue;
+    // iterate over inputs
+    for(var i = 0; i < input.length; i++) {
+        // apply fn to the accumulated value and the next item in the input array, assign this to the accumulated value for the next iteration
+        reducer = fn(reducer, input[i]);
+    }
+    // return accumulated value
+    return reducer;
 };
 
 
@@ -73,8 +89,16 @@ api.funnel = function(input, fn, startValue){
 
  */
 api.distill = function(input, fn){
-  // TODO: your implementation here.
-  return [];
+    // TODO: your implementation here.
+
+    var filtered = [];
+    // iterate over inputs
+    for (var i = 0; i < input.length; i++){
+        // if the predicate function applied to the input returns true push the input onto the array to be returned
+        if (fn(input[i])) filtered.push(input[i]);
+    }
+    // return the filtered array
+    return filtered;
 };
 
 
@@ -96,10 +120,14 @@ api.distill = function(input, fn){
 
  */
 api.numberOfChars = function(input){
-  // TODO: your implementation here
-  return 0;
+    // TODO: your implementation here
+    
+    // sum the characters of each word to a single count
+    return api.funnel(input, function(count, word){
+        // add the length of the current word to the count
+        return count + word.length;
+    }, 0);
 };
-
 
 
 /*
@@ -120,8 +148,14 @@ api.numberOfChars = function(input){
 
  */
 api.numberOfCertainChars= function(input, c){
-// TODO: your implementation here
-  return 0;
+    // TODO: your implementation here
+
+    // reduce the inputs down to a single value, the instances of c
+    return api.funnel(input, function(count, word) {
+        // strip out all the characters that are not c
+        // add the length of the stripped word to accumulated value
+        return count + api.distill(word, (character) => character === c).length;
+    }, 0);
 };
 
 module.exports = api;
